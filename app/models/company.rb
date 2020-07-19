@@ -7,13 +7,15 @@ class Company < ApplicationRecord
   after_initialize :set_attr
 
   def set_attr
-    location = Rails.cache.fetch(self.zip_code)
-    unless location.present?
-      location = ZipCodes.identify(self.zip_code)
-      Rails.cache.write(self.zip_code, location)
+    if self.zip_code.present?
+      location = Rails.cache.fetch(self.zip_code)
+      unless location.present?
+        location = ZipCodes.identify(self.zip_code)
+        Rails.cache.write(self.zip_code, location) if location.present?
+      end
+      self.city = location.try(:[], :city)
+      self.state = location.try(:[], :state_code)
     end
-    self.city = location.try(:[], :city)
-    self.state = location.try(:[], :state_code)
   end
 
   def check_email
