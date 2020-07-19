@@ -7,12 +7,19 @@
     <div class="col text-right">
       <%= link_to "Edit", edit_company_path %>
     </div>
+    <div>
+      <%= link_to "Delete", @company, method: :delete,
+                  :data => {:confirm => "Want to delete #{@company.name} company for sure?"}%>
+    </div>
   </div>
   <div class="bg-success">
     <div class="container p-5 text-white">
       <h1><%= @company.name %></h1>
-      <h3>City, State</h3>
-      <pre>☝️ This is what needs to be udpated. Examples: Atlanta, GA or Nashvile, TN</pre>
+      <%if @company.location.present? %>
+        <h3><%= @company.location[:city]%>, <%= @company.location[:state_code]%></h3>
+      <%else %>
+        <h3>No Location found!</h3>
+      <%end %>
     </div>
   </div>
   <% if @company.description.present? %>
